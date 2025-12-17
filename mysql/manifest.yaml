@@ -1,14 +1,14 @@
 apiVersion: apps/v1
-kind: Deployment 
+kind: Deployment
 metadata:
   name: mysql
   namespace: expense
-  labels: 
+  labels:
     app: mysql
     tier: db
-    project: expense 
+    project: expense
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: mysql
@@ -22,7 +22,7 @@ spec:
         project: expense
     spec:
       containers:
-      - name: nginx 
+      - name: mysql
         image: ramak8sgcp/mysql:v1
         readinessProbe:
           tcpSocket:
@@ -35,19 +35,18 @@ spec:
           initialDelaySeconds: 15
           periodSeconds: 10
 ---
-apiVersion: v1 
-kind: Service 
+kind: Service
+apiVersion: v1
 metadata:
   name: mysql
-  namespace: expense 
+  namespace: expense
 spec:
   selector:
     app: mysql
     tier: db
-    project: expense 
+    project: expense
   ports:
   - name: mysql-port
     protocol: TCP
-    port: 3306
-    targetPort: 3306
-      
+    port: 3306 # service port
+    targetPort: 3306 # container port
